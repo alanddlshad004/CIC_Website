@@ -56,38 +56,59 @@
     document.addEventListener("click", function () { dd.classList.remove("open"); });
   }
 
-  /* ---------- Reveal on scroll ---------- */
-  var startReveals = function () {
-    var targets = document.querySelectorAll("[data-reveal], [data-aos]");
-    if (reduceMotion || !("IntersectionObserver" in window)) {
-      targets.forEach(function (el) { el.classList.add("is-in"); });
-      return;
+  /* ---------- Reveal on scroll ----------
+     Position-based (no IntersectionObserver), so clipped images, smooth
+     scrolling and slow networks can never leave content hidden. */
+  var revealQueue = [];
+  var revealTick = false;
+  var checkReveals = function () {
+    revealTick = false;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    revealQueue = revealQueue.filter(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.92 && r.bottom > 0 || r.bottom < 0) {
+        el.classList.add("is-in");
+        return false;
+      }
+      return true;
+    });
+    if (!revealQueue.length) {
+      window.removeEventListener("scroll", onRevealScroll);
+      window.removeEventListener("resize", onRevealScroll);
     }
-    // auto-stagger siblings marked with data-stagger
+  };
+  var onRevealScroll = function () {
+    if (!revealTick) { revealTick = true; requestAnimationFrame(checkReveals); }
+  };
+  var startReveals = function () {
+    if (startReveals.done) return;
+    startReveals.done = true;
     document.querySelectorAll("[data-stagger]").forEach(function (group) {
       Array.prototype.forEach.call(group.children, function (child, i) {
         if (!child.hasAttribute("data-reveal")) child.setAttribute("data-reveal", "");
         child.style.setProperty("--d", i % 6);
       });
     });
-    targets = document.querySelectorAll("[data-reveal], [data-aos]");
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-in");
-          io.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
-    targets.forEach(function (el) { io.observe(el); });
+    var targets = Array.prototype.slice.call(document.querySelectorAll("[data-reveal], [data-aos]"));
+    if (reduceMotion) { targets.forEach(function (el) { el.classList.add("is-in"); }); return; }
+    revealQueue = targets;
+    window.addEventListener("scroll", onRevealScroll, { passive: true });
+    window.addEventListener("resize", onRevealScroll);
+    checkReveals();
+    setTimeout(checkReveals, 300);
   };
 
-  // Wait for the intro loader (if present) so the first reveals are seen.
+  // Start after the intro loader (if any) — but never wait more than 4s.
   if (document.getElementById("loading-container") && body.classList.contains("loading")) {
     document.addEventListener("cic:loaded", startReveals, { once: true });
+    setTimeout(startReveals, 4000);
   } else {
     startReveals();
   }
+  // Last-resort safety net: if scripts stall, show everything.
+  setTimeout(function () {
+    if (!startReveals.done) document.documentElement.classList.remove("js");
+  }, 8000);
 
   /* ---------- Smooth in-page anchors ---------- */
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
@@ -263,13 +284,13 @@
   }
 
   /* ---------- Brand curves draw-in ---------- */
-  var curves = document.querySelectorAll(".has-curves");
-  if (curves.length && "IntersectionObserver" in window) {
-    var cio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-in"); cio.unobserve(en.target); } });
-    }, { threshold: 0.25 });
-    curves.forEach(function (c) { cio.observe(c); });
-  } else {
-    curves.forEach(function (c) { c.classList.add("is-in"); });
-  }
+  document.querySelectorAll(".has-curves").forEach(function (c) {
+    c.setAttribute("data-reveal-curves", "");
+    var check = function () {
+      var r = c.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.8) { c.classList.add("is-in"); window.removeEventListener("scroll", check); }
+    };
+    window.addEventListener("scroll", check, { passive: true });
+    check();
+  });
 })();

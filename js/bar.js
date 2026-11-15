@@ -85,14 +85,15 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     requestAnimationFrame(step);
   };
-  if ("IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) { run(entry.target); io.unobserve(entry.target); }
-      });
-    }, { threshold: 0.4 });
-    counters.forEach(function (c) { io.observe(c); });
-  } else {
-    counters.forEach(run);
-  }
+  var pending = Array.prototype.slice.call(counters);
+  var checkCounters = function () {
+    pending = pending.filter(function (c) {
+      var r = c.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.9 && r.bottom > 0) { run(c); return false; }
+      return true;
+    });
+    if (!pending.length) window.removeEventListener("scroll", checkCounters);
+  };
+  window.addEventListener("scroll", checkCounters, { passive: true });
+  checkCounters();
 });
