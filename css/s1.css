@@ -1,0 +1,379 @@
+/* ==========================================================================
+   CIC — Condition / treatment article pages (services/*.html)
+   2026 refresh — editorial layout matching css/site.css
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&family=Public+Sans:wght@300..700&family=Noto+Sans+Arabic:wght@400..700&display=swap");
+
+@view-transition { navigation: auto; }
+
+:root {
+  --ink: #101b2b;
+  --paper: #ffffff;
+  --paper-2: #f1f4f8;
+  --muted: #586273;
+  --line: rgba(12, 22, 36, .12);
+  --line-strong: rgba(12, 22, 36, .28);
+  --blue: #174a8f;
+  --red: #96191f;
+  --f-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-arabic: "Noto Sans Arabic", "Public Sans", sans-serif;
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --gutter: clamp(16px, 4vw, 56px);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  counter-reset: sec;
+}
+body.rtl { font-family: var(--f-arabic); }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--blue); color: #fff; }
+
+/* reading progress (scroll-driven, progressive) */
+@supports (animation-timeline: scroll()) {
+  body.no-site-header::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 2px;
+    z-index: 50;
+    background: var(--red);
+    transform-origin: 0 50%;
+    animation: readProgress linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes readProgress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--gutter) 40px;
+}
+
+/* ---------- Header ---------- */
+.article-header {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  align-items: end;
+  padding: clamp(96px, 12vw, 160px) 0 clamp(56px, 7vw, 96px);
+  border-bottom: 1px solid var(--line);
+}
+.title-section { grid-column: 1 / span 7; }
+.title-section::before {
+  content: "CIC — Condition & Treatment";
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 28px;
+  animation: rise 1s var(--ease-out) both;
+}
+.product-title {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(48px, 7.4vw, 112px);
+  line-height: 1;
+  letter-spacing: -.02em;
+  margin-bottom: 24px;
+  animation: maskUp 1.2s var(--ease-out) .1s both;
+}
+.product-subtitle {
+  font-size: clamp(18px, 1.5vw, 21px);
+  color: var(--muted);
+  max-width: 40ch;
+  animation: rise 1s var(--ease-out) .3s both;
+}
+.product-image {
+  grid-column: 9 / -1;
+  aspect-ratio: 4 / 5;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--paper-2);
+  animation: clipIn 1.4s var(--ease-in-out) .15s both;
+}
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: zoomOut 2s var(--ease-out) .15s both;
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+@keyframes maskUp { from { clip-path: inset(0 0 100% 0); transform: translateY(40px); } to { clip-path: inset(-10% -10% -10% -10%); transform: none; } }
+@keyframes clipIn { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes zoomOut { from { transform: scale(1.2); } }
+
+/* ---------- Sections ---------- */
+.container section {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0 24px;
+  padding: clamp(48px, 6vw, 80px) 0;
+  border-bottom: 1px solid var(--line);
+}
+.container section > * { grid-column: 5 / -1; }
+.container section h2 {
+  grid-column: 1 / span 4;
+  grid-row: 1 / span 20;
+  align-self: start;
+  position: sticky;
+  top: 32px;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(30px, 3vw, 42px);
+  line-height: 1.08;
+  padding-right: 24px;
+  counter-increment: sec;
+}
+.container section h2::before {
+  content: counter(sec, decimal-leading-zero);
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: .1em;
+  color: var(--red);
+  margin-bottom: 14px;
+}
+.container section p { margin-bottom: 18px; color: #2a3444; font-size: 18px; max-width: 64ch; }
+.container section p:last-child { margin-bottom: 0; }
+.container section strong { font-weight: 600; color: var(--ink); }
+
+.container ul { list-style: none; margin: 4px 0 24px; border-top: 1px solid var(--line); max-width: 64ch; }
+.container ul:last-child { margin-bottom: 0; }
+.container ul li {
+  position: relative;
+  padding: 14px 0 14px 30px;
+  border-bottom: 1px solid var(--line);
+  transition: padding .5s var(--ease-out), background-color .4s;
+}
+.container ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 27px;
+  width: 14px;
+  height: 1px;
+  background: var(--red);
+  transition: width .5s var(--ease-out);
+}
+.container ul li:hover { padding-left: 40px; }
+.container ul li:hover::before { width: 26px; }
+
+.intro-section p:first-of-type {
+  font-family: var(--f-display);
+  font-size: clamp(24px, 2.4vw, 34px);
+  line-height: 1.3;
+  color: var(--ink);
+  max-width: 34ch;
+}
+.intro-section p:first-of-type strong { font-weight: 400; font-style: italic; color: var(--blue); }
+
+/* scroll-linked reveals where supported */
+@supports (animation-timeline: view()) {
+  .container section > *, .article-footer {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+  .container section h2 { animation: none; }
+}
+
+/* ---------- Footer / back link ---------- */
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: clamp(48px, 6vw, 80px) 0 40px;
+}
+.article-footer::after {
+  content: "Comprehensive Interventional Center";
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.back-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 500;
+  font-size: 15px;
+  overflow: hidden;
+  isolation: isolate;
+}
+.back-link::before {
+  content: "←";
+  transition: transform .5s var(--ease-out);
+}
+.back-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--blue);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path .55s var(--ease-out);
+}
+.back-link:hover::after { clip-path: inset(0); }
+.back-link:hover::before { transform: translateX(-4px); }
+
+/* ---------- Language toggle ---------- */
+.language-toggle { position: fixed; left: 20px; bottom: 20px; z-index: 60; }
+.language-toggle .dropdown { position: relative; }
+.dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: .06em;
+  cursor: pointer;
+  box-shadow: 0 10px 30px -10px rgba(12, 22, 36, .5);
+}
+.arrow-down {
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-135deg) translate(-2px, -2px);
+}
+.dropdown-menu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  min-width: 160px;
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: 0 20px 50px -12px rgba(12, 22, 36, .35), 0 0 0 1px var(--line);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity .3s var(--ease-out), transform .4s var(--ease-out), visibility 0s .3s;
+}
+.dropdown:hover .dropdown-menu,
+.dropdown:focus-within .dropdown-menu { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.dropdown-item:hover { background: var(--paper-2); }
+
+/* ---------- RTL ---------- */
+body.rtl .product-title, body.rtl .container section h2, body.rtl .intro-section p:first-of-type { font-family: var(--f-arabic); line-height: 1.4; letter-spacing: 0; }
+body.rtl .container section h2 { padding-right: 0; padding-left: 24px; }
+body.rtl .container ul li { padding: 14px 30px 14px 0; }
+body.rtl .container ul li::before { left: auto; right: 0; }
+body.rtl .container ul li:hover { padding-right: 40px; padding-left: 0; }
+body.rtl .back-link::before { content: "→"; }
+body.rtl .dropdown-item { text-align: right; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .title-section, .product-image { grid-column: 1 / -1; }
+  .product-image { aspect-ratio: 16 / 10; }
+  .container section > *, .container section h2 { grid-column: 1 / -1; grid-row: auto; position: static; }
+  .container section h2 { margin-bottom: 20px; padding: 0; }
+  .article-footer { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  html { scroll-behavior: auto; }
+}
+
+::view-transition-old(root) { animation: vtOut .4s var(--ease-in-out) both; }
+::view-transition-new(root) { animation: vtIn .6s var(--ease-out) both; }
+@keyframes vtOut { to { opacity: 0; transform: translateY(-14px); } }
+@keyframes vtIn { from { opacity: 0; transform: translateY(18px); } }
+
+
+/* Brand refinement layer */
+.article-header { background: var(--paper-2); margin: 0 calc(var(--gutter) * -1); padding-left: var(--gutter); padding-right: var(--gutter); border-bottom: 0; }
+.container { max-width: 1320px; }
+.title-section::before {
+  content: "Comprehensive Interventional Center";
+  font-family: var(--f-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--red);
+  margin-bottom: 18px;
+}
+.product-title { font-weight: 600; font-size: clamp(42px, 5.6vw, 80px); letter-spacing: -.03em; line-height: 1.04; }
+.product-image { border-radius: 8px; aspect-ratio: 4 / 3; }
+.container section h2 { font-weight: 600; font-size: clamp(24px, 2.2vw, 32px); letter-spacing: -.02em; line-height: 1.15; }
+.container section h2::before { display: none; }
+.intro-section p:first-of-type { font-family: var(--f-body); font-size: clamp(20px, 1.8vw, 24px); line-height: 1.5; font-weight: 400; max-width: 46ch; }
+.intro-section p:first-of-type strong { font-style: normal; font-weight: 600; color: var(--blue); }
+.container ul li::before { width: 6px; height: 6px; border-radius: 50%; top: 24px; background: var(--blue); }
+.container ul li:hover { padding-left: 30px; background: transparent; }
+.container ul li:hover::before { width: 6px; }
+body.rtl .container ul li:hover { padding-right: 30px; }
+.back-link { background: var(--blue); border-radius: 6px; font-weight: 600; }
+.back-link::after { display: none; }
+.back-link:hover { background: #0e2f5c; }
+.article-footer::after { font-family: var(--f-body); letter-spacing: 0; text-transform: none; font-size: 14px; }
+.dropdown-btn { font-family: var(--f-body); font-weight: 600; letter-spacing: 0; background: var(--blue); }
+
+/* Localised decorative labels */
+html[lang="ar"] .title-section::before, html[lang="ar"] .article-footer::after { content: "المركز التداخلي الشامل"; font-family: var(--f-arabic); }
+html[lang="ckb"] .title-section::before, html[lang="ckb"] .article-footer::after { content: "سەنتەری گشتگیری دەستێوەردان"; font-family: var(--f-arabic); }
+
+
+/* Site header/footer on article pages */
+.article-header { margin-top: var(--header-h, 80px); padding-top: clamp(40px, 6vw, 90px); }
+.article-cta {
+  display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+  margin: clamp(48px, 6vw, 80px) 0 clamp(56px, 7vw, 96px);
+  padding: clamp(28px, 4vw, 48px);
+  border-radius: 16px; background: var(--deep, #0c2547); color: #fff;
+}
+.article-cta h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -.02em; margin-bottom: 8px; }
+.article-cta p { color: rgba(255,255,255,.78); max-width: 52ch; }
+.article-cta .cta-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.article-cta .back-link { background: rgba(255,255,255,.12); }
+.article-cta .back-link:hover { background: rgba(255,255,255,.22); }
+body.rtl .article-cta h2 { font-family: var(--f-arabic); }
+@media (max-width: 800px) { .article-cta { grid-template-columns: 1fr; } }

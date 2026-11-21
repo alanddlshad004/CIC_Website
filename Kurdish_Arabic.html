@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بروشوری CIC / بروشور CIC</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&family=Public+Sans:wght@300..700&family=Noto+Sans+Arabic:wght@400..700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
+
+  <style>
+    :root { --ink:#0c2547; --paper:#ffffff; --line:rgba(244,242,237,.14); --ease:cubic-bezier(.16,1,.3,1); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Noto Sans Arabic", "Public Sans", sans-serif;
+      background: var(--ink);
+      min-height: 100svh;
+      color: var(--paper);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      -webkit-font-smoothing: antialiased;
+    }
+    .top-bar { width: 100%; max-width: 950px; padding: 48px 20px 12px; text-align: center; animation: up .9s var(--ease) both; }
+    .logo-img { width: 110px; height: auto; margin: 0 auto 22px; background:#fff; padding:10px 14px; border-radius:8px; box-sizing:content-box; }
+    .page-title { font-family: "Public Sans", sans-serif; font-size: 12px; font-weight: 600; opacity: .7; margin-bottom: 6px; }
+    .page-subtitle { font-family: "Public Sans", sans-serif; font-weight: 300; font-size: 1rem; opacity: .8; margin-bottom: 28px; }
+    .lang-toggle { position: relative; display: inline-flex; padding: 4px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); margin-bottom: 32px; }
+    .lang-toggle button {
+      border: 0; background: transparent; color: var(--paper);
+      padding: 10px 28px; border-radius: 999px;
+      font: 600 15px "Noto Sans Arabic", sans-serif; cursor: pointer;
+      transition: background-color .4s var(--ease), color .4s var(--ease);
+    }
+    .lang-toggle button.active { background: var(--paper); color: var(--ink); }
+    .doc-wrapper { width: 100%; max-width: 950px; flex: 1; padding: 0 16px 30px; text-align: center; }
+    .doc-panel { display: none; }
+    .doc-panel.active { display: block; animation: up .7s var(--ease) both; }
+    .brochure-images { display: flex; flex-direction: column; gap: 18px; }
+    .brochure-images img {
+      width: 100%; height: auto; display: block;
+      border-radius: 6px; cursor: zoom-in;
+      box-shadow: 0 30px 60px -30px rgba(0,0,0,.6);
+      transition: transform .6s var(--ease);
+    }
+    .brochure-images img:hover { transform: translateY(-4px); }
+    .home-link { display: inline-block; margin-top: 28px; color: var(--paper); opacity: .75; font-size: 14px; border-bottom: 1px solid currentColor; padding-bottom: 2px; text-decoration: none; }
+    .home-link:hover { opacity: 1; }
+    .footer { margin: 26px 0 20px; font: 12px "Public Sans", sans-serif; opacity: .45; text-align: center; }
+    .footer a { color: var(--paper); text-decoration: none; }
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(12,22,36,.94); z-index: 999; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
+    .lightbox.active { display: flex; animation: fade .3s ease both; }
+    .lightbox img { max-width: 100%; max-height: 100%; border-radius: 6px; animation: up .5s var(--ease) both; }
+    @keyframes up { from { opacity: 0; transform: translateY(16px); } }
+    @keyframes fade { from { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <img src="images/logo.webp" alt="CIC Logo" class="logo-img" loading="lazy">
+    <div class="page-title" data-title-ku="CIC" data-title-ar="CIC">
+      CIC
+    </div>
+    <div class="page-subtitle" data-sub-ku="Comprehensive Interventional Center" data-sub-ar="Comprehensive Interventional Center">
+      Comprehensive Interventional Center
+    </div>
+
+    <div class="lang-toggle">
+      <button type="button" id="btn-ku" class="active" onclick="showLang('ku')">کوردی</button>
+      <button type="button" id="btn-ar" class="" onclick="showLang('ar')">عربي</button>
+    </div>
+  </div>
+
+  <div class="doc-wrapper text-center">
+
+    <div class="doc-panel active" id="panel-ku">
+      <div class="brochure-images">
+        <img src="images/1784531022686_Kr_F.webp" alt="CIC Kurdish Brochure - Front" loading="lazy" onclick="openLightbox(this.src)">
+        <img src="images/1784531022689_Kr_B.webp" alt="CIC Kurdish Brochure - Back" loading="lazy" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+
+    <div class="doc-panel " id="panel-ar">
+      <div class="brochure-images">
+        <img src="images/1784531022688_Ar_F.webp" alt="CIC Arabic Brochure - Front" loading="lazy" onclick="openLightbox(this.src)">
+        <img src="images/1784531022685_Ar_B.webp" alt="CIC Arabic Brochure - Back" loading="lazy" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+
+    <a class="home-link" href="https://www.ci-c.org" data-home-ku="بگەڕێوە بۆ ماڵپەڕی CIC" data-home-ar="العودة إلى موقع CIC">
+      بگەڕێوە بۆ ماڵپەڕی CIC    </a>
+  </div>
+
+  <div class="footer">
+    <p>Developed by <a href="https://promo-agency.co/">©Promo Agency</a></p>
+  </div>
+
+  <!-- Lightbox for full-size viewing -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Full size brochure">
+  </div>
+  <script>
+    function showLang(lang) {
+      document.getElementById('panel-ku').classList.toggle('active', lang === 'ku');
+      document.getElementById('panel-ar').classList.toggle('active', lang === 'ar');
+      document.getElementById('btn-ku').classList.toggle('active', lang === 'ku');
+      document.getElementById('btn-ar').classList.toggle('active', lang === 'ar');
+
+      var title = document.querySelector('.page-title');
+      var sub = document.querySelector('.page-subtitle');
+      var home = document.querySelector('.home-link');
+      title.textContent = title.getAttribute('data-title-' + lang);
+      sub.textContent = sub.getAttribute('data-sub-' + lang);
+      home.textContent = home.getAttribute('data-home-' + lang);
+
+      var url = new URL(window.location);
+      url.searchParams.set('lang', lang);
+      window.history.replaceState({}, '', url);
+    }
+
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('active');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+  </script>
+</body>
+</html>
